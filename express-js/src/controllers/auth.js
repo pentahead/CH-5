@@ -7,6 +7,6 @@ exports.register = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  const data = await authService.login(req.body, req.files);
+  const data = await authService.login(req.body);
   successResponse(res, data);
 };

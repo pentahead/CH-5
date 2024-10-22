@@ -17,15 +17,17 @@ exports.createUser = async (data) => {
   return JSONBigInt.parse(serializedUsers);
 };
 
+// get user by email, compare passrodnya if true login
 exports.getUser = async (data) => {
-  const finduserbyemail = await prisma.users.findUnique({
+  const user = await prisma.users.findUnique({
     where: { email: data.email },
   });
-  const validPassword = await bcrypt.compare(
-    data.password,
-    finduserbyemail.password
-  );
-  const serializedUsers = JSONBigInt.stringify(finduserbyemail);
-  return JSONBigInt.parse(serializedUsers);
+
+  const serializedUser = JSONBigInt.stringify(user);
+  return JSONBigInt.parse(serializedUser);
 };
-// get user by ElementInternals, compare passrodnya if true login
+
+exports.validPassword = async (data, user) => {
+  const comparePassword = await bcrypt.compare(data.password, user.password);
+  return comparePassword;
+};

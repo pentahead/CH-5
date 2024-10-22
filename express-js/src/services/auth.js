@@ -1,6 +1,7 @@
 const userRepository = require("../repositories/users");
 const jwt = require("jsonwebtoken");
 const { imageUpload } = require("../utils/image-kit");
+const { NotFoundError, InternalServerError } = require("../utils/request");
 
 exports.register = async (data, file) => {
   if (file.profile_picture) {
@@ -25,12 +26,26 @@ exports.register = async (data, file) => {
   return { user, token };
 };
 
-exports.login = async (data) =>{
+exports.login = async (data) => {
   const user = await userRepository.getUser(data);
+  if (!user) {
+    throw new NotFoundError("User tidak ditemukan");
+  };
+
+  const validPassword = await userRepository.validPassword(data, user);
+  if (!validPassword) {
+    throw new NotFoundError("Password salah");
+  };
+
   const token = jwt.sign(
     { id: user.id, email: user.email }, 
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET, 
     { expiresIn: "1h" } 
   );
-  return user, token;
-}
+  delete user.password;
+
+  return {
+    user: user,
+    token: token,
+  };
+};
