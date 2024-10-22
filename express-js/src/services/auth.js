@@ -30,22 +30,24 @@ exports.login = async (data) => {
   const user = await userRepository.getUser(data);
   if (!user) {
     throw new NotFoundError("User tidak ditemukan");
-  };
+  }
 
   const validPassword = await userRepository.validPassword(data, user);
   if (!validPassword) {
     throw new NotFoundError("Password salah");
-  };
+  }
 
+  //generate token with jwt
   const token = jwt.sign(
-    { id: user.id, email: user.email }, 
-    process.env.JWT_SECRET, 
-    { expiresIn: "1h" } 
+    { id: user.id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
   );
+
   delete user.password;
 
   return {
-    user: user,
-    token: token,
+    user,
+    token,
   };
 };
