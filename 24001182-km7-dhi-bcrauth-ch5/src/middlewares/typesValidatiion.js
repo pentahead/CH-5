@@ -30,6 +30,19 @@ exports.validateGetTypeById = (req, res, next) => {
 
   next();
 };
+exports.validateGetTypes = (req, res, next) => {
+  const validateParams = z.object({
+    id: z.string(),
+  });
+
+  const result = validateParams.safeParse(req.params);
+
+  if (!result.success) {
+    throw new BadRequestError(result.error.errors);
+  }
+
+  next();
+};
 
 exports.validateUpdateType = (req, res, next) => {
   const validateBody = z.object({

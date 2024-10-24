@@ -1,25 +1,26 @@
 const express = require("express");
 const optionsController = require("../controllers/optionsController");
 const optionsValidation = require("../middlewares/optionsValidation");
-
+const { authorization } = require("../middlewares/auth");
+const { adminRole, userRole } = require("../constant/auth");
 const router = express.Router();
 
 router
   .route("/")
-  .get(optionsValidation.validateGetOptions, optionsController.getOptions)
-  .post(
+  .get(authorization(adminRole, userRole), optionsValidation.validateGetOptions, optionsController.getOptions)
+  .post(authorization(adminRole), 
     optionsValidation.validateCreateOptions,
     optionsController.createOptions
   );
 
 router
   .route("/:id")
-  .get(
+  .get(authorization(adminRole, userRole), 
     optionsValidation.validateGetOptionsById,
     optionsController.getOptionsById
   )
-  .put(optionsValidation.validateUpdateOptions, optionsController.updateOptions)
-  .delete(
+  .put(authorization(adminRole), optionsValidation.validateUpdateOptions, optionsController.updateOptions)
+  .delete(authorization(adminRole), 
     optionsValidation.validateDeleteOptionsById,
     optionsController.deleteOptionsById
   );

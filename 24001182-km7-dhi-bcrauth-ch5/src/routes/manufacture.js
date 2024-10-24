@@ -13,20 +13,22 @@ const {
   createManufacture,
   updateManufacture,
 } = require("../controllers/manufacturesController");
+const { authorization } = require("../middlewares/auth");
+const { adminRole, userRole } = require("../constant/auth");
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(getManufactures)
-  .post(validateCreateManufacture, createManufacture);
+  .get(authorization(adminRole, userRole), getManufactures)
+  .post(authorization(adminRole), validateCreateManufacture, createManufacture);
 
 router
   .route("/:id")
-  .get(validateGetManufactureById, getManufactureById)
-  .put(validateUpdateManufacture, updateManufacture)
-  .delete(validateDeleteManufactureById, deleteManufactureById);
+  .get(authorization(adminRole, userRole), validateGetManufactureById, getManufactureById)
+  .put(authorization(adminRole), validateUpdateManufacture, updateManufacture)
+  .delete(authorization(adminRole), validateDeleteManufactureById, deleteManufactureById);
 
-// router.get("/search", validateGetManufactures, getManufactures);
+
 
 module.exports = router;

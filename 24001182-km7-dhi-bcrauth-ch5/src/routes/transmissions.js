@@ -13,18 +13,20 @@ const {
   createTransmission,
   updateTransmission,
 } = require("../controllers/transmissionsController");
+const { authorization } = require("../middlewares/auth");
+const { adminRole, userRole } = require("../constant/auth");
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(getTransmissions)
-  .post(validateCreateTransmission, createTransmission);
+  .get(authorization(adminRole, userRole), getTransmissions)
+  .post(authorization(adminRole), validateCreateTransmission, createTransmission);
 
 router
   .route("/:id")
-  .get(validateGetTransmissionById, getTransmissionById)
-  .put(validateUpdateTransmission, updateTransmission)
-  .delete(validateDeleteTransmissionById, deleteTransmissionById);
+  .get(authorization(adminRole, userRole), validateGetTransmissionById, getTransmissionById)
+  .put(authorization(adminRole), validateUpdateTransmission, updateTransmission)
+  .delete(authorization(adminRole), validateDeleteTransmissionById, deleteTransmissionById);
 
 module.exports = router;

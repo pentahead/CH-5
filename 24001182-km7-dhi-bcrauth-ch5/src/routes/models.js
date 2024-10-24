@@ -13,19 +13,19 @@ const {
   createModel,
   updateModel,
 } = require("../controllers/modelsControllers");
-
+const { authorization } = require("../middlewares/auth");
+const { adminRole, userRole } = require("../constant/auth");
 const router = express.Router();
 
-// It will be run the URL based on path and the method
 router
   .route("/")
-  .get(validateGetModels, getModels)
-  .post(validateCreateModel, createModel);
+  .get(authorization(adminRole, userRole), validateGetModels, getModels)
+  .post(authorization(adminRole), validateCreateModel, createModel);
 
 router
   .route("/:id")
-  .get(validateGetModelById, getModelById)
-  .put(validateUpdateModel, updateModel)
-  .delete(validateDeleteModelById, deleteModelById);
+  .get(authorization(adminRole, userRole), validateGetModelById, getModelById)
+  .put(authorization(adminRole), validateUpdateModel, updateModel)
+  .delete(authorization(adminRole), validateDeleteModelById, deleteModelById);
 
 module.exports = router;

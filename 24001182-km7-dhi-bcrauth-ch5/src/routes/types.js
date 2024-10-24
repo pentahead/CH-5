@@ -13,15 +13,20 @@ const {
   createType,
   updateType,
 } = require("../controllers/typesController");
+const { authorization } = require("../middlewares/auth");
+const { adminRole, userRole } = require("../constant/auth");
 
 const router = express.Router();
 
-router.route("/").get(getTypes).post(validateCreateType, createType);
+router
+  .route("/")
+  .get(authorization(adminRole, userRole), validateGetTypes, getTypes)
+  .post(authorization(adminRole), validateCreateType, createType);
 
 router
   .route("/:id")
-  .get(validateGetTypeById, getTypeById)
-  .put(validateUpdateType, updateType)
-  .delete(validateDeleteTypeById, deleteTypeById);
+  .get(authorization(adminRole, userRole), validateGetTypeById, getTypeById)
+  .put(authorization(adminRole), validateUpdateType, updateType)
+  .delete(authorization(adminRole), validateDeleteTypeById, deleteTypeById);
 
 module.exports = router;

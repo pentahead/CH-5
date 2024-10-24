@@ -34,15 +34,15 @@ model Available {
 }
 
 model Options {
-  id           BigInt         @id @default(autoincrement())
-  option_name  String?        @db.VarChar(100)
-  modelOptions modelOptions[]
+  id          BigInt         @id @default(autoincrement())
+  option_name String?        @db.VarChar(100)
+  models      modelOptions[]
 }
 
 model Specs {
-  id         BigInt       @id @default(autoincrement())
-  spec_name  String?      @db.VarChar(100)
-  modelSpecs modelSpecs[]
+  id        BigInt       @id @default(autoincrement())
+  spec_name String?      @db.VarChar(100)
+  models    modelSpecs[]
 }
 
 model Models {
@@ -56,8 +56,8 @@ model Models {
   manufacture     Manufacture?   @relation(fields: [manufacture_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   transmission    Transmission?  @relation(fields: [transmission_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   type            Type?          @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  modelOptions    modelOptions[]
-  modelSpecs      modelSpecs[]
+  options         modelOptions[]
+  specs           modelSpecs[]
 }
 
 model Cars {
@@ -74,20 +74,11 @@ model Cars {
   model           Models?    @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model users {
-  id              BigInt  @id(map: "users_pk") @default(autoincrement())
-  name            String  @db.VarChar
-  email           String  @unique(map: "users_email_idx") @db.VarChar
-  password        String  @db.VarChar
-  profile_picture String? @db.VarChar
-  role_id         Int     @default(2)
-}
-
 model modelOptions {
   model_id  BigInt
   option_id BigInt
-  Models    Models  @relation(fields: [model_id], references: [id], onDelete: Cascade)
-  Options   Options @relation(fields: [option_id], references: [id], onDelete: Cascade)
+  model     Models  @relation(fields: [model_id], references: [id], onDelete: Cascade)
+  option    Options @relation(fields: [option_id], references: [id], onDelete: Cascade)
 
   @@id([model_id, option_id])
 }
@@ -95,8 +86,17 @@ model modelOptions {
 model modelSpecs {
   model_id BigInt
   spec_id  BigInt
-  Models   Models @relation(fields: [model_id], references: [id], onDelete: Cascade)
-  Specs    Specs  @relation(fields: [spec_id], references: [id], onDelete: Cascade)
+  model    Models @relation(fields: [model_id], references: [id], onDelete: Cascade)
+  spec     Specs  @relation(fields: [spec_id], references: [id], onDelete: Cascade)
 
   @@id([model_id, spec_id])
+}
+
+model users {
+  id              BigInt  @id(map: "users_pk") @default(autoincrement())
+  name            String  @db.VarChar
+  email           String  @unique(map: "users_email_idx") @db.VarChar
+  password        String  @db.VarChar
+  profile_picture String? @db.VarChar
+  role_id         Int     @default(2)
 }
