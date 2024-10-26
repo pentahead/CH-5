@@ -9,7 +9,15 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   const data = await authService.login(req.body);
   successResponse(res, {
-    message: "Succcesfully logged in!",
+    message: "Succcesfully loggedin!",
     data,
   });
+};
+
+exports.profile = async (req, res, next) => {
+  const data = req.user;
+
+  delete data.password;
+
+  successResponse(res, data);
 };

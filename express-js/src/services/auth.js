@@ -1,7 +1,8 @@
 const userRepository = require("../repositories/users");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const { imageUpload } = require("../utils/image-kit");
-const { NotFoundError, InternalServerError } = require("../utils/request");
+const { Unauthorized } = require("../utils/request");
 
 exports.register = async (data, file) => {
   if (file.profile_picture) {
@@ -27,22 +28,18 @@ exports.register = async (data, file) => {
 };
 
 exports.login = async (data) => {
-  const user = await userRepository.getUser(data);
+  const user = await userRepository.getUserByEmail(data);
   if (!user) {
-    throw new NotFoundError("User tidak ditemukan");
+    throw new Unauthorized("Email tidak ditemukan!");
   }
 
-  const validPassword = await userRepository.validPassword(data, user);
+  const validPassword = await bcrypt.compare(data.password, user.password);
   if (!validPassword) {
-    throw new NotFoundError("Password salah");
+    throw new Unauthorized("Password salah");
   }
 
   //generate token with jwt
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+  const token = createToken(user);
 
   delete user.password;
 
@@ -50,4 +47,11 @@ exports.login = async (data) => {
     user,
     token,
   };
+};
+
+const createToken = (user) => {
+  const token = jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, {
+    expiresIn: "72h",
+  });
+  return token;
 };

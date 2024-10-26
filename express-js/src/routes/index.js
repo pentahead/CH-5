@@ -1,10 +1,10 @@
 const express = require("express");
 const studentsRouter = require("./students");
-const authrouter = require("./auth");
+const authRouter = require("./auth");
 
 const router = express.Router();
 
 router.use("/students", studentsRouter);
-router.use("/auth", authrouter);
+router.use("/auth", authRouter);
 
 module.exports = router;

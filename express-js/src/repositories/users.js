@@ -18,7 +18,7 @@ exports.createUser = async (data) => {
 };
 
 // get user by email, compare passrodnya if true login
-exports.getUser = async (data) => {
+exports.getUserByEmail = async (data) => {
   const user = await prisma.users.findUnique({
     where: { email: data.email },
   });
@@ -27,7 +27,11 @@ exports.getUser = async (data) => {
   return JSONBigInt.parse(serializedUser);
 };
 
-exports.validPassword = async (data, user) => {
-  const comparePassword = await bcrypt.compare(data.password, user.password);
-  return comparePassword;
+exports.getUserById = async (data) => {
+  const user = await prisma.users.findUnique({
+    where: { id: data },
+  });
+
+  const serializedUser = JSONBigInt.stringify(user);
+  return JSONBigInt.parse(serializedUser);
 };
