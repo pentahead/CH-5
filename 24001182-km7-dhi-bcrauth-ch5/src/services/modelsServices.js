@@ -36,7 +36,7 @@ exports.createModel = async (data) => {
 };
 
 exports.updateModel = async (id, data) => {
-  const existingModel = modelRepository.getModelById(id);
+  const existingModel = await modelRepository.getModelById(id);
   if (!existingModel) {
     throw new NotFoundError("Model is Not Found!");
   }
@@ -45,7 +45,7 @@ exports.updateModel = async (id, data) => {
     ...data,
   };
 
-  const updatedModel = modelRepository.updateModel(id, data);
+  const updatedModel = await modelRepository.updateModel(id, data);
   if (!updatedModel) {
     throw new InternalServerError(["Failed to update model!"]);
   }
