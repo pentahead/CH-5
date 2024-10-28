@@ -21,7 +21,7 @@ exports.getSpecs = async (spec_name) => {
     };
   }
 
-  const searchedSpecs = await prisma.Specs.findMany(query);
+  const searchedSpecs = await prisma.specs.findMany(query);
 
   const serializedSpecs = JSONBigInt.stringify(searchedSpecs);
   return JSONBigInt.parse(serializedSpecs);
@@ -30,7 +30,7 @@ exports.getSpecs = async (spec_name) => {
 exports.getSpecById = async (id) => {
   const specId = parseInt(id, 10);
 
-  const spec = await prisma.Specs.findFirst({
+  const spec = await prisma.specs.findFirst({
     where: {
       id: specId,
     },
@@ -41,7 +41,7 @@ exports.getSpecById = async (id) => {
 };
 
 exports.createSpec = async (data) => {
-  const newSpec = await prisma.Specs.create({
+  const newSpec = await prisma.specs.create({
     data: {
       spec_name: data.spec_name,
     },
