@@ -20,7 +20,7 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(authorization(adminRole, userRole), validateGetTypes, getTypes)
+  .get(authorization(adminRole, userRole), getTypes)
   .post(authorization(adminRole), validateCreateType, createType);
 
 router

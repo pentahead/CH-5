@@ -17,8 +17,16 @@ exports.getModels = async (
       transmission: true,
       manufacture: true,
       type: true,
-      specs: { include: { spec: true } },
-      options: { include: { option: true } },
+      specs: {
+        include: {
+          spec: true,
+        },
+      },
+      options: {
+        include: {
+          option: true,
+        },
+      },
     },
   };
 
@@ -157,7 +165,7 @@ exports.createModel = async (data) => {
 exports.updateModel = async (id, data) => {
   const updatedModel = await prisma.models.update({
     where: {
-      id: parseInt(id, 10), 
+      id: parseInt(id, 10),
     },
     data: {
       model_name: data.model_name,
@@ -179,45 +187,42 @@ exports.updateModel = async (id, data) => {
     (Array.isArray(data.option_id)
       ? data.option_id
       : data.option_id.split(",").map((id) => id.trim())
-    ) 
-      .map(async (optionId) => {
-        return prisma.modelOptions.upsert({
-          where: {
-            model_id_option_id: {
-              model_id: updatedModel.id,
-              option_id: BigInt(optionId), 
-            },
-          },
-          update: {},
-          create: {
+    ).map(async (optionId) => {
+      return prisma.modelOptions.upsert({
+        where: {
+          model_id_option_id: {
             model_id: updatedModel.id,
             option_id: BigInt(optionId),
           },
-        });
-      })
+        },
+        update: {},
+        create: {
+          model_id: updatedModel.id,
+          option_id: BigInt(optionId),
+        },
+      });
+    })
   );
-
 
   const updateSpecs = await Promise.all(
     (Array.isArray(data.spec_id)
       ? data.spec_id
       : data.spec_id.split(",").map((id) => id.trim())
-    ) 
-      .map(async (specId) => {
-        return prisma.modelSpecs.upsert({
-          where: {
-            model_id_spec_id: {
-              model_id: updatedModel.id,
-              spec_id: BigInt(specId),
-            },
-          },
-          update: {},
-          create: {
+    ).map(async (specId) => {
+      return prisma.modelSpecs.upsert({
+        where: {
+          model_id_spec_id: {
             model_id: updatedModel.id,
             spec_id: BigInt(specId),
           },
-        });
-      })
+        },
+        update: {},
+        create: {
+          model_id: updatedModel.id,
+          spec_id: BigInt(specId),
+        },
+      });
+    })
   );
 
   const Models = {
@@ -233,22 +238,21 @@ exports.updateModel = async (id, data) => {
 exports.deleteModelById = async (modelId) => {
   await prisma.modelOptions.deleteMany({
     where: {
-      model_id: parseInt(modelId, 10), 
+      model_id: parseInt(modelId, 10),
     },
   });
 
   await prisma.modelSpecs.deleteMany({
     where: {
-      model_id: parseInt(modelId, 10), 
+      model_id: parseInt(modelId, 10),
     },
   });
 
-  
   const deletedModel = await prisma.models.delete({
     where: {
-      id: parseInt(modelId, 10), 
+      id: parseInt(modelId, 10),
     },
   });
 
-  return deletedModel; 
+  return deletedModel;
 };
