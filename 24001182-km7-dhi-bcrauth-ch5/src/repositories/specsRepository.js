@@ -56,9 +56,7 @@ exports.updateSpec = async (id, data) => {
     where: {
       id: Number(id),
     },
-    data: {
-      spec_name: data.spec_name,
-    },
+    data,
   });
 
   const serializedSpecs = JSONBigInt.stringify(updatedSpec);
