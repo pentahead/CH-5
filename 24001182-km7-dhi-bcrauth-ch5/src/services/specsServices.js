@@ -15,12 +15,12 @@ exports.getSpecById = async (id) => {
   return spec;
 };
 
-exports.createSpec = async (data, file) => {
+exports.createSpec = async (data) => {
   return specRepository.createSpec(data);
 };
 
-exports.updateSpec = async (id, data, file) => {
-  const existingSpec = specRepository.getSpecById(id);
+exports.updateSpec = async (id, data ) => {
+  const existingSpec = await specRepository.getSpecById(id);
   if (!existingSpec) {
     throw new NotFoundError("Spec is Not Found!");
   }
