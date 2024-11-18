@@ -49,6 +49,29 @@ exports.login = async (data) => {
   };
 };
 
+exports.googleLogin = async (accessToken) => {
+  const { email, name, picture } = await userRepository.googlelogin(
+    accessToken
+  );
+
+  let user = await userRepository.getUserByEmail(email);
+  if (!user) {
+    //if user dgn email itu blm ada. maka buat email
+    user = await userRepository.createUser({
+      email,
+      name,
+      profile_picture: picture,
+      password: "",
+    });
+  }
+  //create token
+  const token = createToken(user);
+
+  //dont forget to remove the password object, if not it will be displayed in reposnse
+  delete user.password;
+  return { user, token };
+};
+
 const createToken = (user) => {
   const token = jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, {
     expiresIn: "72h",

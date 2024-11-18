@@ -24,7 +24,7 @@ exports.createStudent = async (data, file) => {
 
 exports.updateStudent = async (id, data, file) => {
   // find student is exist or not (validate the data)
-  const existingStudent = await studentRepository.getStudentById(id);
+  const existingStudent = studentRepository.getStudentById(id);
   if (!existingStudent) {
     throw new NotFoundError("Student is Not Found!");
   }

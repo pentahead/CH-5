@@ -21,3 +21,8 @@ exports.profile = async (req, res, next) => {
 
   successResponse(res, data);
 };
+
+exports.googleLogin = async (req, res, next) => {
+  const data = await authService.googleLogin(req.body.access_token);
+  successResponse(res, data);
+};
